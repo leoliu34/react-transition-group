@@ -1,4 +1,4 @@
-import React from 'react';
+import { h, Component, cloneElement } from 'preact';
 import { mount } from 'enzyme';
 
 import CSSTransition from '../src/CSSTransition';
@@ -339,7 +339,7 @@ describe('CSSTransition', () => {
   describe('reentering', () => {
     it('should remove dynamically applied classes', done => {
       let count = 0;
-      class Test extends React.Component {
+      class Test extends Component {
         render() {
           const { direction, text, ...props } = this.props;
 
@@ -347,7 +347,7 @@ describe('CSSTransition', () => {
             <TransitionGroup
               component={null}
               childFactory={child =>
-                React.cloneElement(child, {
+                cloneElement(child, {
                   classNames: direction
                 })
               }
