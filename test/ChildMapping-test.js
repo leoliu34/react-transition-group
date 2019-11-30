@@ -1,12 +1,8 @@
-let React;
-let ChildMapping;
+import { h } from 'preact';
+
+import * as ChildMapping from '../src/utils/ChildMapping';
 
 describe('ChildMapping', () => {
-  beforeEach(() => {
-    React = require('react');
-    ChildMapping = require('../src/utils/ChildMapping');
-  });
-
   it('should support getChildMapping', () => {
     let oneone = <div key="oneone" />;
     let onetwo = <div key="onetwo" />;
@@ -16,8 +12,8 @@ describe('ChildMapping', () => {
 
     let mapping = ChildMapping.getChildMapping(component.props.children);
 
-    expect(mapping['.$one'].props).toEqual(one.props);
-    expect(mapping['.$two'].props).toEqual(two.props);
+    expect(mapping.one.props).toEqual(one.props);
+    expect(mapping.two.props).toEqual(two.props);
   });
 
   it('should support mergeChildMappings for adding keys', () => {
