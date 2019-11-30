@@ -1,7 +1,7 @@
 {
-  "name": "react-transition-group",
-  "version": "4.3.0",
-  "description": "A react component toolset for managing animations",
+  "name": "@bmp/preact-transition-group",
+  "version": "0.0.1",
+  "description": "A preact component toolset for managing animations",
   "main": "lib/cjs/index.js",
   "module": "lib/esm/index.js",
   "scripts": {
