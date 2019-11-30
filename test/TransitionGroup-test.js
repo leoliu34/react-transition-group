@@ -1,9 +1,8 @@
 import { mount } from 'enzyme'
+import { h, toChildArray, Component as PreactComponent, render } from 'preact'
 
-let React
-let ReactDOM
-let TransitionGroup
-let Transition
+import Transition from '../src/Transition'
+import TransitionGroup from '../src/TransitionGroup'
 
 // Most of the real functionality is covered in other unit tests, this just
 // makes sure we're wired up correctly.
@@ -11,10 +10,6 @@ describe('TransitionGroup', () => {
   let container, log, Child
 
   beforeEach(() => {
-    React = require('react')
-    ReactDOM = require('react-dom')
-    Transition = require('../src/Transition').default
-    TransitionGroup = require('../src/TransitionGroup')
 
     container = document.createElement('div')
 
@@ -39,7 +34,7 @@ describe('TransitionGroup', () => {
 
   it('should allow null components', () => {
     function FirstChild(props) {
-      const childrenArray = React.Children.toArray(props.children)
+      const childrenArray = toChildArray(props.children)
       return childrenArray[0] || null
     }
 
@@ -53,7 +48,7 @@ describe('TransitionGroup', () => {
   it('should allow callback refs', () => {
     const ref = jest.fn()
 
-    class Child extends React.Component {
+    class Child extends PreactComponent {
       render() {
         return <span />
       }
@@ -69,7 +64,7 @@ describe('TransitionGroup', () => {
   })
 
   it('should work with no children', () => {
-    ReactDOM.render(<TransitionGroup />, container)
+    render(<TransitionGroup />, container)
   })
 
   it('should handle transitioning correctly', () => {
@@ -84,24 +79,24 @@ describe('TransitionGroup', () => {
     }
 
     jest.useFakeTimers()
-    ReactDOM.render(<Parent />, container)
+    render(<Parent />, container)
 
     jest.runAllTimers()
     expect(log).toEqual(['appear', 'appearing', 'appeared'])
 
     log = []
-    ReactDOM.render(<Parent count={2} />, container)
+    render(<Parent count={2} />, container)
     jest.runAllTimers()
     expect(log).toEqual(['enter', 'entering', 'entered'])
 
     log = []
-    ReactDOM.render(<Parent count={1} />, container)
+    render(<Parent count={1} />, container)
     jest.runAllTimers()
     expect(log).toEqual(['exit', 'exiting', 'exited'])
   })
 
   it('should not throw when enter callback is called and is now leaving', () => {
-    class Child extends React.Component {
+    class Child extends PreactComponent {
       componentWillReceiveProps() {
         if (this.callback) {
           this.callback()
@@ -117,16 +112,16 @@ describe('TransitionGroup', () => {
       }
     }
 
-    class Component extends React.Component {
+    class Component extends PreactComponent {
       render() {
         return <TransitionGroup>{this.props.children}</TransitionGroup>
       }
     }
 
     // render the base component
-    ReactDOM.render(<Component />, container)
+    render(<Component />, container)
     // now make the child enter
-    ReactDOM.render(
+    render(
       <Component>
         <Child key="child" />
       </Component>,
@@ -134,11 +129,11 @@ describe('TransitionGroup', () => {
     )
     // rendering the child leaving will call 'componentWillProps' which will trigger the
     // callback. This would throw an error previously.
-    expect(ReactDOM.render.bind(this, <Component />, container)).not.toThrow()
+    expect(render.bind(null, <Component />, container)).not.toThrow()
   })
 
   it('should not throw when leave callback is called and is now entering', () => {
-    class Child extends React.Component {
+    class Child extends PreactComponent {
       componentWillReceiveProps() {
         if (this.callback) {
           this.callback()
@@ -154,27 +149,27 @@ describe('TransitionGroup', () => {
       }
     }
 
-    class Component extends React.Component {
+    class Component extends PreactComponent {
       render() {
         return <TransitionGroup>{this.props.children}</TransitionGroup>
       }
     }
 
     // render the base component
-    ReactDOM.render(<Component />, container)
+    render(<Component />, container)
     // now make the child enter
-    ReactDOM.render(
+    render(
       <Component>
         <Child key="child" />
       </Component>,
       container
     )
     // make the child leave
-    ReactDOM.render(<Component />, container)
+    render(<Component />, container)
     // rendering the child entering again will call 'componentWillProps' which will trigger the
     // callback. This would throw an error previously.
     expect(
-      ReactDOM.render.bind(
+      render.bind(
         this,
         <Component>
           <Child key="child" />
