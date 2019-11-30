@@ -1,5 +1,4 @@
-import React from 'react'
-import ReactDOM from 'react-dom'
+import { h, Component } from 'preact'
 
 import { mount } from 'enzyme'
 
@@ -62,7 +61,7 @@ describe('Transition', () => {
   })
 
   it('should pass filtered props to children', () => {
-    class Child extends React.Component {
+    class Child extends Component {
       render() {
         return <div>child</div>
       }
@@ -90,7 +89,7 @@ describe('Transition', () => {
       </Transition>
     ).find(Child)
 
-    expect(child.props()).toEqual({ foo: 'foo', bar: 'bar' })
+    expect(child.props()).toMatchObject({ foo: 'foo', bar: 'bar' })
   })
 
   it('should allow addEndListener instead of timeouts', done => {
@@ -329,7 +328,7 @@ describe('Transition', () => {
   })
 
   describe('mountOnEnter', () => {
-    class MountTransition extends React.Component {
+    class MountTransition extends Component {
       constructor(props) {
         super(props)
         this.state = { in: props.initialIn }
@@ -363,7 +362,10 @@ describe('Transition', () => {
           initialIn={false}
           onEnter={() => {
             expect(wrapper.instance().getStatus()).toEqual(EXITED)
-            expect(wrapper.getDOMNode()).toExist()
+            // TODO the react version was:
+            // `expect(wrapper.getDOMNode()).toExist()`, but getDOMNode() is
+            // still null here
+            expect(wrapper.instance().base).toExist()
             done()
           }}
         />
@@ -401,7 +403,7 @@ describe('Transition', () => {
   })
 
   describe('unmountOnExit', () => {
-    class UnmountTransition extends React.Component {
+    class UnmountTransition extends Component {
       constructor(props) {
         super(props)
 
@@ -436,7 +438,7 @@ describe('Transition', () => {
           initialIn={false}
           onEnter={() => {
             expect(wrapper.getStatus()).toEqual(EXITED)
-            expect(ReactDOM.findDOMNode(wrapper)).toExist()
+            expect(wrapper.base).toExist()
 
             done()
           }}
@@ -444,7 +446,7 @@ describe('Transition', () => {
       ).instance()
 
       expect(wrapper.getStatus()).toEqual(UNMOUNTED)
-      expect(ReactDOM.findDOMNode(wrapper)).toBeNull()
+      expect(wrapper.base).toBeUndefined()
 
       wrapper.setState({ in: true })
     })
@@ -456,7 +458,7 @@ describe('Transition', () => {
           onExited={() => {
             setTimeout(() => {
               expect(wrapper.getStatus()).toEqual(UNMOUNTED)
-              expect(ReactDOM.findDOMNode(wrapper)).not.toExist()
+              expect(wrapper.base).not.toExist()
               done()
             })
           }}
@@ -464,7 +466,7 @@ describe('Transition', () => {
       ).instance()
 
       expect(wrapper.getStatus()).toEqual(ENTERED)
-      expect(ReactDOM.findDOMNode(wrapper)).toExist()
+      expect(wrapper.base).toExist()
 
       wrapper.setState({ in: false })
     })
