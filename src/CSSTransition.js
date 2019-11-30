@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import addOneClass from 'dom-helpers/addClass';
 
 import removeOneClass from 'dom-helpers/removeClass';
-import React from 'react';
+import { h, Component } from 'preact';
 
 import Transition from './Transition';
 import { classNamesShape } from './utils/PropTypes';
@@ -74,7 +74,7 @@ const removeClass = (node, classes) => node && classes && classes.split(' ').for
  * [`appear`](http://reactcommunity.org/react-transition-group/transition#Transition-prop-appear)
  * prop, make sure to define styles for `.appear-*` classes as well.
  */
-class CSSTransition extends React.Component {
+class CSSTransition extends Component {
   static defaultProps = {
     classNames: ''
   }

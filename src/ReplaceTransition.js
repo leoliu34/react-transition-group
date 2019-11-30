@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types';
-import React from 'react';
-import ReactDOM from 'react-dom'
+import { h, cloneElement, Component, toChildArray } from 'preact';
 import TransitionGroup from './TransitionGroup';
 
 /**
@@ -14,7 +13,7 @@ import TransitionGroup from './TransitionGroup';
  * </ReplaceTransition>
  * ```
  */
-class ReplaceTransition extends React.Component {
+class ReplaceTransition extends Component {
   handleEnter = (...args) => this.handleLifecycle('onEnter', 0, args)
   handleEntering = (...args) => this.handleLifecycle('onEntering', 0, args)
   handleEntered = (...args) => this.handleLifecycle('onEntered', 0, args)
@@ -25,10 +24,10 @@ class ReplaceTransition extends React.Component {
 
   handleLifecycle(handler, idx, originalArgs) {
     const { children } = this.props;
-    const child = React.Children.toArray(children)[idx];
+    const child = toChildArray(children)[idx];
 
     if (child.props[handler]) child.props[handler](...originalArgs)
-    if (this.props[handler]) this.props[handler](ReactDOM.findDOMNode(this))
+    if (this.props[handler]) this.props[handler](this.base)
   }
 
   render() {
@@ -37,7 +36,7 @@ class ReplaceTransition extends React.Component {
       in: inProp,
       ...props
     } = this.props;
-    const [first, second] = React.Children.toArray(children);
+    const [first, second] = toChildArray(children);
 
     delete props.onEnter;
     delete props.onEntering;
@@ -49,14 +48,14 @@ class ReplaceTransition extends React.Component {
     return (
       <TransitionGroup {...props}>
         {inProp ?
-          React.cloneElement(first, {
+          cloneElement(first, {
             key: 'first',
             onEnter: this.handleEnter,
             onEntering: this.handleEntering,
             onEntered: this.handleEntered,
 
           }) :
-          React.cloneElement(second, {
+          cloneElement(second, {
             key: 'second',
             onEnter: this.handleExit,
             onEntering: this.handleExiting,
@@ -71,7 +70,7 @@ class ReplaceTransition extends React.Component {
 ReplaceTransition.propTypes = {
   in: PropTypes.bool.isRequired,
   children(props, propName) {
-    if (React.Children.count(props[propName]) !== 2)
+    if (toChildArray(props[propName]).length !== 2)
       return new Error(`"${propName}" must be exactly two transition components.`)
 
     return null;

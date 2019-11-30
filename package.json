@@ -54,8 +54,7 @@
     ]
   },
   "peerDependencies": {
-    "react": ">=16.6.0",
-    "react-dom": ">=16.6.0"
+    "preact": ">=10.0.0"
   },
   "dependencies": {
     "@babel/runtime": "^7.5.5",

@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import React from 'react'
+import { h, Component } from 'preact'
 import TransitionGroupContext from './TransitionGroupContext'
 
 import {
@@ -29,7 +29,7 @@ const defaultProps = {
  * component. This means you can mix and match animations across different list
  * items.
  */
-class TransitionGroup extends React.Component {
+class TransitionGroup extends Component {
   constructor(props, context) {
     super(props, context)
 

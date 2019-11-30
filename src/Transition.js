@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types'
-import React from 'react'
-import ReactDOM from 'react-dom'
+import { h, cloneElement, Component, toChildArray } from 'preact'
 
 import config from './config'
 import { timeoutsShape } from './utils/PropTypes'
@@ -103,7 +102,7 @@ export const EXITING = 'exiting'
  * When `in` is `false` the same thing happens except the state moves from
  * `'exiting'` to `'exited'`.
  */
-class Transition extends React.Component {
+class Transition extends Component {
   static contextType = TransitionGroupContext
 
   constructor(props, context) {
@@ -210,7 +209,7 @@ class Transition extends React.Component {
     if (nextStatus !== null) {
       // nextStatus will always be ENTERING or EXITING.
       this.cancelNextCallback()
-      const node = ReactDOM.findDOMNode(this)
+      const node = this.base
 
       if (nextStatus === ENTERING) {
         this.performEnter(node, mounting)
@@ -359,11 +358,11 @@ class Transition extends React.Component {
       )
     }
 
-    const child = React.Children.only(children)
+    const child = toChildArray(children)[0]
     return (
       // allows for nested Transitions
       <TransitionGroupContext.Provider value={null}>
-        {React.cloneElement(child, childProps)}
+        {cloneElement(child, childProps)}
       </TransitionGroupContext.Provider>
     )
   }

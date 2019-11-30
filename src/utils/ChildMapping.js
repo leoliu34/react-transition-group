@@ -1,4 +1,4 @@
-import { Children, cloneElement, isValidElement } from 'react'
+import { cloneElement, isValidElement, toChildArray } from 'preact'
 
 /**
  * Given `this.props.children`, return an object mapping key to child.
@@ -11,7 +11,7 @@ export function getChildMapping(children, mapFn) {
 
   let result = Object.create(null)
   if (children)
-    Children.map(children, c => c).forEach(child => {
+    toChildArray(children).forEach(child => {
       // run the map function here instead so that the key is the computed one
       result[child.key] = mapper(child)
     })

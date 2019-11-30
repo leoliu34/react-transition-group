@@ -1,3 +1,3 @@
-import React from 'react';
+import { createContext } from 'preact';
 
-export default React.createContext(null);
+export default createContext(null);
