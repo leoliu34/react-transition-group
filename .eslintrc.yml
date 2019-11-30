@@ -6,6 +6,7 @@ extends:
 settings:
   react:
     version: detect
+    pragma: h
 env:
   node: true
   browser: true
